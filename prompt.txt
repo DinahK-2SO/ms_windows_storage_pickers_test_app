@@ -1,0 +1,12 @@
+写一个测试app，使其能测试到 README.md中所有的内容。并且能对这些内容，分别比较 new pickers (a,k,a Microsoft.Windows.Storage.Pickers) 和 UWP pickers (a.k.a Windows.Storage.Pickers) 的效果。
+
+app的框架已经搭建好了，你可以通过`Microsoft.Windows.Storage.Pickers.FileOpenPicker (或 FileSavePicker 或 FolderPicker 来直接引用到new pickers)`，你只需要修改MainWindows.xaml.cs 和 MainWindows.xaml。
+
+你可以参考README.md中的以下示例代码来构建 new pickers.
+```csharp
+using Microsoft.Windows.Storage.Pickers;
+
+var picker = new FileOpenPicker(this.AppWindow.Id);
+var result = await picker.PickerSingleFileAsync();
+string path = result.Path;
+```
