@@ -189,12 +189,12 @@
         </StackPanel>
     </Grid>
     
-    <Window.Resources>
+    <!--Window.Resources>
         <Style x:Key="TestGroupStyle" TargetType="StackPanel">
             <Setter Property="Spacing" Value="8"/>
             <Setter Property="Padding" Value="0,0,0,12"/>
             <Setter Property="BorderBrush" Value="{ThemeResource DividerStrokeColorDefaultBrush}"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
         </Style>
-    </Window.Resources>
+    </Window.Resources-->
 </Window>

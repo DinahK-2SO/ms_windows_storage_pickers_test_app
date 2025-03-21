@@ -36,7 +36,7 @@ namespace FilePickersAppWithUnpackagedProj
             ResultsTextBlock.Text = $"[{DateTime.Now:HH:mm:ss}] {message}\n{ResultsTextBlock.Text}";
         }
         
-        private PickerLocationId GetSelectedLocation()
+        private Windows.Storage.Pickers.PickerLocationId GetSelectedLocation()
         {
             switch(StartLocationComboBox.SelectedIndex)
             {
@@ -47,6 +47,20 @@ namespace FilePickersAppWithUnpackagedProj
                 case 4: return PickerLocationId.PicturesLibrary;
                 case 5: return PickerLocationId.VideosLibrary;
                 default: return PickerLocationId.Unspecified;
+            }
+        }
+
+        private Microsoft.Windows.Storage.Pickers.PickerLocationId GetSelectedNewLocationId()
+        {
+            switch (StartLocationComboBox.SelectedIndex)
+            {
+                case 0: return Microsoft.Windows.Storage.Pickers.PickerLocationId.Desktop;
+                case 1: return Microsoft.Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
+                case 2: return Microsoft.Windows.Storage.Pickers.PickerLocationId.Downloads;
+                case 3: return Microsoft.Windows.Storage.Pickers.PickerLocationId.MusicLibrary;
+                case 4: return Microsoft.Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
+                case 5: return Microsoft.Windows.Storage.Pickers.PickerLocationId.VideosLibrary;
+                default: return Microsoft.Windows.Storage.Pickers.PickerLocationId.Unspecified;
             }
         }
         
@@ -98,8 +112,6 @@ namespace FilePickersAppWithUnpackagedProj
             {
                 // Initialize new picker with AppWindow.Id
                 var picker = new Microsoft.Windows.Storage.Pickers.FileOpenPicker(this.AppWindow.Id);
-                
-                picker.FileTypeFilter.Add("*");
                 
                 var result = await picker.PickSingleFileAsync();
                 if (result != null)
@@ -324,16 +336,16 @@ namespace FilePickersAppWithUnpackagedProj
                 var picker = new Microsoft.Windows.Storage.Pickers.FileOpenPicker(this.AppWindow.Id);
                 
                 picker.FileTypeFilter.Add("*");
-                picker.SuggestedStartLocation = GetSelectedLocation();
+                picker.SuggestedStartLocation = GetSelectedNewLocationId();
                 
                 var result = await picker.PickSingleFileAsync();
                 if (result != null)
                 {
-                    LogResult($"New FileOpenPicker with SuggestedStartLocation: {GetSelectedLocation()}\nFile: {System.IO.Path.GetFileName(result.Path)}\nPath: {result.Path}");
+                    LogResult($"New FileOpenPicker with SuggestedStartLocation: {GetSelectedNewLocationId()}\nFile: {System.IO.Path.GetFileName(result.Path)}\nPath: {result.Path}");
                 }
                 else
                 {
-                    LogResult($"New FileOpenPicker with SuggestedStartLocation: {GetSelectedLocation()}\nOperation cancelled");
+                    LogResult($"New FileOpenPicker with SuggestedStartLocation: {GetSelectedNewLocationId()}\nOperation cancelled");
                 }
             }
             catch (Exception ex)
