@@ -1,23 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
-using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Windows.Storage;
-using Windows.Storage.Pickers;
-using Microsoft.UI.Windowing;
-using WinRT;
 
 namespace FilePickersAppWithUnpackagedProj
 {
@@ -40,13 +26,17 @@ namespace FilePickersAppWithUnpackagedProj
         {
             switch(StartLocationComboBox.SelectedIndex)
             {
-                case 0: return PickerLocationId.Desktop;
-                case 1: return PickerLocationId.DocumentsLibrary;
-                case 2: return PickerLocationId.Downloads;
-                case 3: return PickerLocationId.MusicLibrary;
-                case 4: return PickerLocationId.PicturesLibrary;
-                case 5: return PickerLocationId.VideosLibrary;
-                default: return PickerLocationId.Unspecified;
+                case 0: return Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
+                case 1: return Windows.Storage.Pickers.PickerLocationId.ComputerFolder;
+                case 2: return Windows.Storage.Pickers.PickerLocationId.Desktop;
+                case 3: return Windows.Storage.Pickers.PickerLocationId.Downloads;
+                case 4: return Windows.Storage.Pickers.PickerLocationId.HomeGroup;
+                case 5: return Windows.Storage.Pickers.PickerLocationId.MusicLibrary;
+                case 6: return Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
+                case 7: return Windows.Storage.Pickers.PickerLocationId.VideosLibrary;
+                case 8: return Windows.Storage.Pickers.PickerLocationId.Objects3D;
+                case 9: return Windows.Storage.Pickers.PickerLocationId.Unspecified;
+                default: throw new InvalidOperationException("Invalid location selected");
             }
         }
 
@@ -54,16 +44,40 @@ namespace FilePickersAppWithUnpackagedProj
         {
             switch (StartLocationComboBox.SelectedIndex)
             {
-                case 0: return Microsoft.Windows.Storage.Pickers.PickerLocationId.Desktop;
-                case 1: return Microsoft.Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
-                case 2: return Microsoft.Windows.Storage.Pickers.PickerLocationId.Downloads;
-                case 3: return Microsoft.Windows.Storage.Pickers.PickerLocationId.MusicLibrary;
-                case 4: return Microsoft.Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
-                case 5: return Microsoft.Windows.Storage.Pickers.PickerLocationId.VideosLibrary;
-                default: return Microsoft.Windows.Storage.Pickers.PickerLocationId.Unspecified;
+                case 0: return Microsoft.Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
+                case 1: return Microsoft.Windows.Storage.Pickers.PickerLocationId.ComputerFolder;
+                case 2: return Microsoft.Windows.Storage.Pickers.PickerLocationId.Desktop;
+                case 3: return Microsoft.Windows.Storage.Pickers.PickerLocationId.Downloads;
+                case 4: return Microsoft.Windows.Storage.Pickers.PickerLocationId.HomeGroup;
+                case 5: return Microsoft.Windows.Storage.Pickers.PickerLocationId.MusicLibrary;
+                case 6: return Microsoft.Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
+                case 7: return Microsoft.Windows.Storage.Pickers.PickerLocationId.VideosLibrary;
+                case 8: return Microsoft.Windows.Storage.Pickers.PickerLocationId.Objects3D;
+                case 9: return Microsoft.Windows.Storage.Pickers.PickerLocationId.Unspecified;
+                default: throw new InvalidOperationException("Invalid location selected");
             }
         }
-        
+
+        private Windows.Storage.Pickers.PickerViewMode GetSelectedViewMode()
+        {
+            switch (ViewModeComboBox.SelectedIndex)
+            {
+                case 0: return Windows.Storage.Pickers.PickerViewMode.List;
+                case 1: return Windows.Storage.Pickers.PickerViewMode.Thumbnail;
+                default: throw new InvalidOperationException("Invalid view mode selected");
+            }
+        }
+
+        private Microsoft.Windows.Storage.Pickers.PickerViewMode GetSelectedNewViewMode()
+        {
+            switch (ViewModeComboBox.SelectedIndex)
+            {
+                case 0: return Microsoft.Windows.Storage.Pickers.PickerViewMode.List;
+                case 1: return Microsoft.Windows.Storage.Pickers.PickerViewMode.Thumbnail;
+                default: throw new InvalidOperationException("Invalid view mode selected");
+            }
+        }
+
         private string[] GetFileFilters()
         {
             string input = FileTypeFilterInput.Text?.Trim() ?? "";
@@ -87,9 +101,21 @@ namespace FilePickersAppWithUnpackagedProj
                 // Initialize UWP picker
                 var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
                 WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-                
-                picker.FileTypeFilter.Add("*");
-                
+
+                picker.FileTypeFilter.Clear();
+                if (FileTypeFilterCheckBox.IsChecked == true)
+                {
+                    foreach (var filter in GetFileFilters())
+                    {
+                        picker.FileTypeFilter.Add(filter);
+                    }
+                }
+
+                picker.CommitButtonText = CommitButtonTextInput.Text;
+                picker.ViewMode = GetSelectedViewMode();
+                picker.SettingsIdentifier = SettingsIdInput.Text;
+                picker.SuggestedStartLocation = GetSelectedLocation();
+
                 var file = await picker.PickSingleFileAsync();
                 if (file != null)
                 {
@@ -112,7 +138,11 @@ namespace FilePickersAppWithUnpackagedProj
             {
                 // Initialize new picker with AppWindow.Id
                 var picker = new Microsoft.Windows.Storage.Pickers.FileOpenPicker(this.AppWindow.Id);
-                
+                picker.CommitButtonText = CommitButtonTextInput.Text;
+                picker.ViewMode = GetSelectedNewViewMode();
+                picker.SettingsIdentifier = SettingsIdInput.Text;
+                picker.SuggestedStartLocation = GetSelectedNewLocationId();
+
                 var result = await picker.PickSingleFileAsync();
                 if (result != null)
                 {
@@ -137,8 +167,20 @@ namespace FilePickersAppWithUnpackagedProj
                 // Initialize UWP picker
                 var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
                 WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-                
-                picker.FileTypeFilter.Add("*");
+
+                picker.FileTypeFilter.Clear();
+                if (FileTypeFilterCheckBox.IsChecked == true)
+                {
+                    foreach (var filter in GetFileFilters())
+                    {
+                        picker.FileTypeFilter.Add(filter);
+                    }
+                }
+
+                picker.CommitButtonText = CommitButtonTextInput.Text;
+                picker.ViewMode = GetSelectedViewMode();
+                picker.SettingsIdentifier = SettingsIdInput.Text;
+                picker.SuggestedStartLocation = GetSelectedLocation();
                 
                 var files = await picker.PickMultipleFilesAsync();
                 if (files != null && files.Count > 0)
@@ -166,9 +208,11 @@ namespace FilePickersAppWithUnpackagedProj
             try
             {
                 var picker = new Microsoft.Windows.Storage.Pickers.FileOpenPicker(this.AppWindow.Id);
-                
-                picker.FileTypeFilter.Add("*");
-                
+                picker.CommitButtonText = CommitButtonTextInput.Text;
+                picker.ViewMode = GetSelectedNewViewMode();
+                picker.SettingsIdentifier = SettingsIdInput.Text;
+                picker.SuggestedStartLocation = GetSelectedNewLocationId();
+
                 var results = await picker.PickMultipleFilesAsync();
                 if (results != null && results.Count > 0)
                 {
@@ -197,13 +241,20 @@ namespace FilePickersAppWithUnpackagedProj
                 var picker = new Windows.Storage.Pickers.FileOpenPicker();
                 var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
                 WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-                
-                // Clear default filters and add user-specified filters
+
                 picker.FileTypeFilter.Clear();
-                foreach (var filter in GetFileFilters())
+                if (FileTypeFilterCheckBox.IsChecked == true)
                 {
-                    picker.FileTypeFilter.Add(filter);
+                    foreach (var filter in GetFileFilters())
+                    {
+                        picker.FileTypeFilter.Add(filter);
+                    }
                 }
+
+                picker.CommitButtonText = CommitButtonTextInput.Text;
+                picker.ViewMode = GetSelectedViewMode();
+                picker.SettingsIdentifier = SettingsIdInput.Text;
+                picker.SuggestedStartLocation = GetSelectedLocation();
                 
                 var file = await picker.PickSingleFileAsync();
                 if (file != null)
@@ -226,13 +277,20 @@ namespace FilePickersAppWithUnpackagedProj
             try
             {
                 var picker = new Microsoft.Windows.Storage.Pickers.FileOpenPicker(this.AppWindow.Id);
-                
-                // Clear default filters and add user-specified filters
+
                 picker.FileTypeFilter.Clear();
-                foreach (var filter in GetFileFilters())
+                if (FileTypeFilterCheckBox.IsChecked == true)
                 {
-                    picker.FileTypeFilter.Add(filter);
+                    foreach (var filter in GetFileFilters())
+                    {
+                        picker.FileTypeFilter.Add(filter);
+                    }
                 }
+
+                picker.CommitButtonText = CommitButtonTextInput.Text;
+                picker.ViewMode = GetSelectedNewViewMode();
+                picker.SettingsIdentifier = SettingsIdInput.Text;
+                picker.SuggestedStartLocation = GetSelectedNewLocationId();
                 
                 var result = await picker.PickSingleFileAsync();
                 if (result != null)
@@ -250,427 +308,9 @@ namespace FilePickersAppWithUnpackagedProj
             }
         }
         
-        private async void UwpCommitButtonText_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var picker = new Windows.Storage.Pickers.FileOpenPicker();
-                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-                WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-                
-                picker.FileTypeFilter.Add("*");
-                picker.CommitButtonText = CommitButtonTextInput.Text;
-                
-                var file = await picker.PickSingleFileAsync();
-                if (file != null)
-                {
-                    LogResult($"UWP FileOpenPicker with CommitButtonText: '{CommitButtonTextInput.Text}'\nFile: {file.Name}\nPath: {file.Path}");
-                }
-                else
-                {
-                    LogResult($"UWP FileOpenPicker with CommitButtonText: '{CommitButtonTextInput.Text}'\nOperation cancelled");
-                }
-            }
-            catch (Exception ex)
-            {
-                LogResult($"Error in UWP CommitButtonText: {ex.Message}");
-            }
-        }
-        
-        private async void NewCommitButtonText_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var picker = new Microsoft.Windows.Storage.Pickers.FileOpenPicker(this.AppWindow.Id);
-                
-                picker.FileTypeFilter.Add("*");
-                picker.CommitButtonText = CommitButtonTextInput.Text;
-                
-                var result = await picker.PickSingleFileAsync();
-                if (result != null)
-                {
-                    LogResult($"New FileOpenPicker with CommitButtonText: '{CommitButtonTextInput.Text}'\nFile: {System.IO.Path.GetFileName(result.Path)}\nPath: {result.Path}");
-                }
-                else
-                {
-                    LogResult($"New FileOpenPicker with CommitButtonText: '{CommitButtonTextInput.Text}'\nOperation cancelled");
-                }
-            }
-            catch (Exception ex)
-            {
-                LogResult($"Error in New CommitButtonText: {ex.Message}");
-            }
-        }
-        
-        private async void UwpStartLocation_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var picker = new Windows.Storage.Pickers.FileOpenPicker();
-                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-                WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-                
-                picker.FileTypeFilter.Add("*");
-                picker.SuggestedStartLocation = GetSelectedLocation();
-                
-                var file = await picker.PickSingleFileAsync();
-                if (file != null)
-                {
-                    LogResult($"UWP FileOpenPicker with SuggestedStartLocation: {GetSelectedLocation()}\nFile: {file.Name}\nPath: {file.Path}");
-                }
-                else
-                {
-                    LogResult($"UWP FileOpenPicker with SuggestedStartLocation: {GetSelectedLocation()}\nOperation cancelled");
-                }
-            }
-            catch (Exception ex)
-            {
-                LogResult($"Error in UWP SuggestedStartLocation: {ex.Message}");
-            }
-        }
-        
-        private async void NewStartLocation_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var picker = new Microsoft.Windows.Storage.Pickers.FileOpenPicker(this.AppWindow.Id);
-                
-                picker.FileTypeFilter.Add("*");
-                picker.SuggestedStartLocation = GetSelectedNewLocationId();
-                
-                var result = await picker.PickSingleFileAsync();
-                if (result != null)
-                {
-                    LogResult($"New FileOpenPicker with SuggestedStartLocation: {GetSelectedNewLocationId()}\nFile: {System.IO.Path.GetFileName(result.Path)}\nPath: {result.Path}");
-                }
-                else
-                {
-                    LogResult($"New FileOpenPicker with SuggestedStartLocation: {GetSelectedNewLocationId()}\nOperation cancelled");
-                }
-            }
-            catch (Exception ex)
-            {
-                LogResult($"Error in New SuggestedStartLocation: {ex.Message}");
-            }
-        }
-        
-        private async void UwpSettingsId_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var picker = new Windows.Storage.Pickers.FileOpenPicker();
-                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-                WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-                
-                picker.FileTypeFilter.Add("*");
-                picker.SettingsIdentifier = SettingsIdInput.Text;
-                
-                var file = await picker.PickSingleFileAsync();
-                if (file != null)
-                {
-                    LogResult($"UWP FileOpenPicker with SettingsIdentifier: '{SettingsIdInput.Text}'\nFile: {file.Name}\nPath: {file.Path}");
-                }
-                else
-                {
-                    LogResult($"UWP FileOpenPicker with SettingsIdentifier: '{SettingsIdInput.Text}'\nOperation cancelled");
-                }
-            }
-            catch (Exception ex)
-            {
-                LogResult($"Error in UWP SettingsIdentifier: {ex.Message}");
-            }
-        }
-        
-        private async void NewSettingsId_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var picker = new Microsoft.Windows.Storage.Pickers.FileOpenPicker(this.AppWindow.Id);
-                
-                picker.FileTypeFilter.Add("*");
-                picker.SettingsIdentifier = SettingsIdInput.Text;
-                
-                var result = await picker.PickSingleFileAsync();
-                if (result != null)
-                {
-                    LogResult($"New FileOpenPicker with SettingsIdentifier: '{SettingsIdInput.Text}'\nFile: {System.IO.Path.GetFileName(result.Path)}\nPath: {result.Path}");
-                }
-                else
-                {
-                    LogResult($"New FileOpenPicker with SettingsIdentifier: '{SettingsIdInput.Text}'\nOperation cancelled");
-                }
-            }
-            catch (Exception ex)
-            {
-                LogResult($"Error in New SettingsIdentifier: {ex.Message}");
-            }
-        }
-        
-        private async void UwpListView_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var picker = new Windows.Storage.Pickers.FileOpenPicker();
-                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-                WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-                
-                picker.FileTypeFilter.Add("*");
-                picker.ViewMode = PickerViewMode.List;
-                
-                var file = await picker.PickSingleFileAsync();
-                if (file != null)
-                {
-                    LogResult($"UWP FileOpenPicker with ViewMode: List\nFile: {file.Name}\nPath: {file.Path}");
-                }
-                else
-                {
-                    LogResult("UWP FileOpenPicker with ViewMode: List\nOperation cancelled");
-                }
-            }
-            catch (Exception ex)
-            {
-                LogResult($"Error in UWP ViewMode List: {ex.Message}");
-            }
-        }
-        
-        private async void UwpThumbnailView_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var picker = new Windows.Storage.Pickers.FileOpenPicker();
-                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-                WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-                
-                picker.FileTypeFilter.Add("*");
-                picker.ViewMode = PickerViewMode.Thumbnail;
-                
-                var file = await picker.PickSingleFileAsync();
-                if (file != null)
-                {
-                    LogResult($"UWP FileOpenPicker with ViewMode: Thumbnail\nFile: {file.Name}\nPath: {file.Path}");
-                }
-                else
-                {
-                    LogResult("UWP FileOpenPicker with ViewMode: Thumbnail\nOperation cancelled");
-                }
-            }
-            catch (Exception ex)
-            {
-                LogResult($"Error in UWP ViewMode Thumbnail: {ex.Message}");
-            }
-        }
-        
-        private async void NewListView_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var picker = new Microsoft.Windows.Storage.Pickers.FileOpenPicker(this.AppWindow.Id);
-                
-                picker.FileTypeFilter.Add("*");
-                picker.ViewMode = Microsoft.Windows.Storage.Pickers.PickerViewMode.List;
-                
-                var result = await picker.PickSingleFileAsync();
-                if (result != null)
-                {
-                    LogResult($"New FileOpenPicker with ViewMode: List\nFile: {System.IO.Path.GetFileName(result.Path)}\nPath: {result.Path}");
-                }
-                else
-                {
-                    LogResult("New FileOpenPicker with ViewMode: List\nOperation cancelled");
-                }
-            }
-            catch (Exception ex)
-            {
-                LogResult($"Error in New ViewMode List: {ex.Message}");
-            }
-        }
-        
-        private async void NewThumbnailView_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var picker = new Microsoft.Windows.Storage.Pickers.FileOpenPicker(this.AppWindow.Id);
-                
-                picker.FileTypeFilter.Add("*");
-                picker.ViewMode = Microsoft.Windows.Storage.Pickers.PickerViewMode.Thumbnail;
-                
-                var result = await picker.PickSingleFileAsync();
-                if (result != null)
-                {
-                    LogResult($"New FileOpenPicker with ViewMode: Thumbnail\nFile: {System.IO.Path.GetFileName(result.Path)}\nPath: {result.Path}");
-                }
-                else
-                {
-                    LogResult("New FileOpenPicker with ViewMode: Thumbnail\nOperation cancelled");
-                }
-            }
-            catch (Exception ex)
-            {
-                LogResult($"Error in New ViewMode Thumbnail: {ex.Message}");
-            }
-        }
-        
         #endregion
         
         #region FileSavePicker Tests
-        
-        private async void UwpSaveFile_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var picker = new Windows.Storage.Pickers.FileSavePicker();
-                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-                WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-                
-                picker.SuggestedFileName = "NewDocument";
-                picker.FileTypeChoices.Add("Text Document", new List<string>() { ".txt" });
-                
-                var file = await picker.PickSaveFileAsync();
-                if (file != null)
-                {
-                    LogResult($"UWP FileSavePicker - PickSaveFileAsync:\nFile: {file.Name}\nPath: {file.Path}");
-                }
-                else
-                {
-                    LogResult("UWP FileSavePicker - PickSaveFileAsync: Operation cancelled");
-                }
-            }
-            catch (Exception ex)
-            {
-                LogResult($"Error in UWP FileSavePicker: {ex.Message}");
-            }
-        }
-        
-        private async void NewSaveFile_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var picker = new Microsoft.Windows.Storage.Pickers.FileSavePicker(this.AppWindow.Id);
-                
-                picker.SuggestedFileName = "NewDocument";
-                picker.FileTypeChoices.Add("Text Document", new List<string>() { ".txt" });
-                
-                var result = await picker.PickSaveFileAsync();
-                if (result != null)
-                {
-                    LogResult($"New FileSavePicker - PickSaveFileAsync:\nFile: {System.IO.Path.GetFileName(result.Path)}\nPath: {result.Path}");
-                }
-                else
-                {
-                    LogResult("New FileSavePicker - PickSaveFileAsync: Operation cancelled");
-                }
-            }
-            catch (Exception ex)
-            {
-                LogResult($"Error in New FileSavePicker: {ex.Message}");
-            }
-        }
-        
-        private async void UwpSuggestedFileName_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var picker = new Windows.Storage.Pickers.FileSavePicker();
-                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-                WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-                
-                picker.SuggestedFileName = SuggestedFileNameInput.Text;
-                picker.FileTypeChoices.Add("Text Document", new List<string>() { ".txt" });
-                
-                var file = await picker.PickSaveFileAsync();
-                if (file != null)
-                {
-                    LogResult($"UWP FileSavePicker with SuggestedFileName: '{SuggestedFileNameInput.Text}'\nFile: {file.Name}\nPath: {file.Path}");
-                }
-                else
-                {
-                    LogResult($"UWP FileSavePicker with SuggestedFileName: '{SuggestedFileNameInput.Text}'\nOperation cancelled");
-                }
-            }
-            catch (Exception ex)
-            {
-                LogResult($"Error in UWP SuggestedFileName: {ex.Message}");
-            }
-        }
-        
-        private async void NewSuggestedFileName_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var picker = new Microsoft.Windows.Storage.Pickers.FileSavePicker(this.AppWindow.Id);
-                
-                picker.SuggestedFileName = SuggestedFileNameInput.Text;
-                picker.FileTypeChoices.Add("Text Document", new List<string>() { ".txt" });
-                
-                var result = await picker.PickSaveFileAsync();
-                if (result != null)
-                {
-                    LogResult($"New FileSavePicker with SuggestedFileName: '{SuggestedFileNameInput.Text}'\nFile: {System.IO.Path.GetFileName(result.Path)}\nPath: {result.Path}");
-                }
-                else
-                {
-                    LogResult($"New FileSavePicker with SuggestedFileName: '{SuggestedFileNameInput.Text}'\nOperation cancelled");
-                }
-            }
-            catch (Exception ex)
-            {
-                LogResult($"Error in New SuggestedFileName: {ex.Message}");
-            }
-        }
-        
-        private async void UwpDefaultFileExtension_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var picker = new Windows.Storage.Pickers.FileSavePicker();
-                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-                WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-                
-                picker.SuggestedFileName = "NewDocument";
-                picker.DefaultFileExtension = DefaultFileExtensionInput.Text;
-                picker.FileTypeChoices.Add("Custom Document", new List<string>() { DefaultFileExtensionInput.Text });
-                
-                var file = await picker.PickSaveFileAsync();
-                if (file != null)
-                {
-                    LogResult($"UWP FileSavePicker with DefaultFileExtension: '{DefaultFileExtensionInput.Text}'\nFile: {file.Name}\nPath: {file.Path}");
-                }
-                else
-                {
-                    LogResult($"UWP FileSavePicker with DefaultFileExtension: '{DefaultFileExtensionInput.Text}'\nOperation cancelled");
-                }
-            }
-            catch (Exception ex)
-            {
-                LogResult($"Error in UWP DefaultFileExtension: {ex.Message}");
-            }
-        }
-        
-        private async void NewDefaultFileExtension_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var picker = new Microsoft.Windows.Storage.Pickers.FileSavePicker(this.AppWindow.Id);
-                
-                picker.SuggestedFileName = "NewDocument";
-                picker.DefaultFileExtension = DefaultFileExtensionInput.Text;
-                picker.FileTypeChoices.Add("Custom Document", new List<string>() { DefaultFileExtensionInput.Text });
-                
-                var result = await picker.PickSaveFileAsync();
-                if (result != null)
-                {
-                    LogResult($"New FileSavePicker with DefaultFileExtension: '{DefaultFileExtensionInput.Text}'\nFile: {System.IO.Path.GetFileName(result.Path)}\nPath: {result.Path}");
-                }
-                else
-                {
-                    LogResult($"New FileSavePicker with DefaultFileExtension: '{DefaultFileExtensionInput.Text}'\nOperation cancelled");
-                }
-            }
-            catch (Exception ex)
-            {
-                LogResult($"Error in New DefaultFileExtension: {ex.Message}");
-            }
-        }
         
         private async void UwpFileTypeChoices_Click(object sender, RoutedEventArgs e)
         {
@@ -679,12 +319,34 @@ namespace FilePickersAppWithUnpackagedProj
                 var picker = new Windows.Storage.Pickers.FileSavePicker();
                 var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
                 WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-                
-                picker.SuggestedFileName = "Document";
+
+                if (SuggestedFileNameCheckBox.IsChecked == true)
+                {
+                    picker.SuggestedFileName = SuggestedFileNameInput.Text;
+                }
+
+                if (DefaultFileExtensionCheckBox.IsChecked == true)
+                {
+                    picker.DefaultFileExtension = DefaultFileExtensionInput.Text;
+                }
+
                 picker.FileTypeChoices.Clear();
-                picker.FileTypeChoices.Add("Text Document", new List<string>() { ".txt" });
-                picker.FileTypeChoices.Add("Rich Text Document", new List<string>() { ".rtf" });
-                picker.FileTypeChoices.Add("Web Page", new List<string>() { ".html", ".htm" });
+                if (FileTypeChoicesCheckBox.IsChecked == true)
+                {
+                    var choicesJson = FileTypeChoicesInput.Text;
+                    if (!string.IsNullOrEmpty(choicesJson))
+                    {
+                        var choices = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, List<string>>>(choicesJson);
+                        foreach (var choice in choices)
+                        {
+                            picker.FileTypeChoices.Add(choice.Key, choice.Value);
+                        }
+                    }
+                }
+
+                picker.CommitButtonText = CommitButtonTextInput.Text;
+                picker.SettingsIdentifier = SettingsIdInput.Text;
+                picker.SuggestedStartLocation = GetSelectedLocation();
                 
                 var file = await picker.PickSaveFileAsync();
                 if (file != null)
@@ -707,12 +369,34 @@ namespace FilePickersAppWithUnpackagedProj
             try
             {
                 var picker = new Microsoft.Windows.Storage.Pickers.FileSavePicker(this.AppWindow.Id);
-                
-                picker.SuggestedFileName = "Document";
+
+                if (SuggestedFileNameCheckBox.IsChecked == true)
+                {
+                    picker.SuggestedFileName = SuggestedFileNameInput.Text;
+                }
+
+                if (DefaultFileExtensionCheckBox.IsChecked == true)
+                {
+                    picker.DefaultFileExtension = DefaultFileExtensionInput.Text;
+                }
+
                 picker.FileTypeChoices.Clear();
-                picker.FileTypeChoices.Add("Text Document", new List<string>() { ".txt" });
-                picker.FileTypeChoices.Add("Rich Text Document", new List<string>() { ".rtf" });
-                picker.FileTypeChoices.Add("Web Page", new List<string>() { ".html", ".htm" });
+                if (FileTypeChoicesCheckBox.IsChecked == true)
+                {
+                    var choicesJson = FileTypeChoicesInput.Text;
+                    if (!string.IsNullOrEmpty(choicesJson))
+                    {
+                        var choices = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, List<string>>>(choicesJson);
+                        foreach (var choice in choices)
+                        {
+                            picker.FileTypeChoices.Add(choice.Key, choice.Value);
+                        }
+                    }
+                }
+
+                picker.CommitButtonText = CommitButtonTextInput.Text;
+                picker.SettingsIdentifier = SettingsIdInput.Text;
+                picker.SuggestedStartLocation = GetSelectedNewLocationId();
                 
                 var result = await picker.PickSaveFileAsync();
                 if (result != null)
@@ -729,11 +413,11 @@ namespace FilePickersAppWithUnpackagedProj
                 LogResult($"Error in New FileTypeChoices: {ex.Message}");
             }
         }
-        
+
         #endregion
-        
+
         #region FolderPicker Tests
-        
+
         private async void UwpPickFolder_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -741,8 +425,19 @@ namespace FilePickersAppWithUnpackagedProj
                 var picker = new Windows.Storage.Pickers.FolderPicker();
                 var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
                 WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-                
-                picker.FileTypeFilter.Add("*");
+
+                picker.FileTypeFilter.Clear();
+                if (FileTypeFilterCheckBox.IsChecked == true)
+                {
+                    foreach (var filter in GetFileFilters())
+                    {
+                        picker.FileTypeFilter.Add(filter);
+                    }
+                }
+
+                picker.CommitButtonText = CommitButtonTextInput.Text;
+                picker.SettingsIdentifier = SettingsIdInput.Text;
+                picker.SuggestedStartLocation = GetSelectedLocation();
                 
                 var folder = await picker.PickSingleFolderAsync();
                 if (folder != null)
@@ -765,8 +460,9 @@ namespace FilePickersAppWithUnpackagedProj
             try
             {
                 var picker = new Microsoft.Windows.Storage.Pickers.FolderPicker(this.AppWindow.Id);
-                
-                picker.FileTypeFilter.Add("*");
+                picker.CommitButtonText = CommitButtonTextInput.Text;
+                picker.SettingsIdentifier = SettingsIdInput.Text;
+                picker.SuggestedStartLocation = GetSelectedNewLocationId();
                 
                 var result = await picker.PickSingleFolderAsync();
                 if (result != null)
@@ -784,60 +480,36 @@ namespace FilePickersAppWithUnpackagedProj
             }
         }
         
-        private async void UwpFolderFileTypeFilter_Click(object sender, RoutedEventArgs e)
+        #endregion
+
+        #region test any code
+        // Write anything here.
+        private async void TestAnyCode_Click(object sender, RoutedEventArgs e)
         {
-            try
+            //var picker = new Windows.Storage.Pickers.FileOpenPicker();
+            //// Initialize UWP picker
+            //var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+            //WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
+            //picker.FileTypeFilter.Add("*");
+
+            var picker = new Microsoft.Windows.Storage.Pickers.FileOpenPicker(this.AppWindow.Id);
+
+            picker.SettingsIdentifier = "Test04011829";
+            picker.SuggestedStartLocation = Microsoft.Windows.Storage.Pickers.PickerLocationId.MusicLibrary;
+            picker.CommitButtonText = CommitButtonTextInput.Text;
+            picker.ViewMode = GetSelectedNewViewMode();
+            
+            var file = await picker.PickSingleFileAsync();
+            if (file != null)
             {
-                var picker = new Windows.Storage.Pickers.FolderPicker();
-                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-                WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-                
-                picker.FileTypeFilter.Clear();
-                picker.FileTypeFilter.Add(".txt");
-                picker.FileTypeFilter.Add(".docx");
-                
-                var folder = await picker.PickSingleFolderAsync();
-                if (folder != null)
-                {
-                    LogResult($"UWP FolderPicker with FileTypeFilter (.txt, .docx):\nFolder: {folder.Name}\nPath: {folder.Path}");
-                }
-                else
-                {
-                    LogResult("UWP FolderPicker with FileTypeFilter (.txt, .docx): Operation cancelled");
-                }
+                LogResult($"UWP FileOpenPicker - PickSingleFileAsync:\nFile: Path: {file.Path}");
             }
-            catch (Exception ex)
+            else
             {
-                LogResult($"Error in UWP FolderPicker FileTypeFilter: {ex.Message}");
+                LogResult("UWP FileOpenPicker - PickSingleFileAsync: Operation cancelled");
             }
         }
-        
-        private async void NewFolderFileTypeFilter_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var picker = new Microsoft.Windows.Storage.Pickers.FolderPicker(this.AppWindow.Id);
-                
-                picker.FileTypeFilter.Clear();
-                picker.FileTypeFilter.Add(".txt");
-                picker.FileTypeFilter.Add(".docx");
-                
-                var result = await picker.PickSingleFolderAsync();
-                if (result != null)
-                {
-                    LogResult($"New FolderPicker with FileTypeFilter (.txt, .docx):\nFolder: {System.IO.Path.GetFileName(result.Path)}\nPath: {result.Path}");
-                }
-                else
-                {
-                    LogResult("New FolderPicker with FileTypeFilter (.txt, .docx): Operation cancelled");
-                }
-            }
-            catch (Exception ex)
-            {
-                LogResult($"Error in New FolderPicker FileTypeFilter: {ex.Message}");
-            }
-        }
-        
+
         #endregion
     }
 }

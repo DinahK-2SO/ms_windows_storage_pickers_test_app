@@ -53,7 +53,6 @@
     
     (the folder opened first time when this app opens a folder).
 
-1. if set to PickerLocationId.Unspecified, the picker falls back to the system default.
 1. If not specified, using PickerLocationId.Unspecified by default.
 1. if the specified location doesn't exist on end user's machine, falls back to the document library
  
@@ -65,6 +64,12 @@
 1. 2 buttons in one same process (one same app) shares this memory
 
     This means: if one button picked a file from folder C:\Temp, then launch an open folder from another button, it opens the folder C:\Temp
+
+### UWP
+1. if set to PickerLocationId.Unspecified, the picker throw "invalid parameter error"
+
+### SDK
+1. if set to PickerLocationId.Unspecified, falls back to the DocumentLibrary. [TODO]
 
 ## SettingsIdentifier
 0. Implemented in FileOpenPicker, FileSavePicker, FolderPicker

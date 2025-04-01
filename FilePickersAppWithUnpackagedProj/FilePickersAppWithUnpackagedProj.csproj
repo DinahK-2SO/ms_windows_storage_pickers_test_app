@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
@@ -9,7 +9,12 @@
     <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
     <UseWinUI>true</UseWinUI>
     <Nullable>enable</Nullable>
-	<WindowsPackageType>None</WindowsPackageType>
+
+    <!-- make it unpackaged: -->
+	  <WindowsPackageType>None</WindowsPackageType>
+
+    <!-- make app self contained: -->
+	  <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,7 +23,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.20250318-1635-Dev" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.250325003-experimental" />
   </ItemGroup>
 
     <!-- Publish Properties -->
