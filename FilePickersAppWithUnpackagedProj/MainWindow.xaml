@@ -23,9 +23,9 @@
                 <TextBlock Text="Shared Attributes (all 3 pickers)" FontWeight="SemiBold"/>
                 <StackPanel Orientation="Vertical" Spacing="8" >
 
-                    <StackPanel Orientation="Horizontal" Spacing="8" >
-                        <StackPanel Orientation="Vertical" Spacing="8" >
-                            <TextBlock Text="SuggestedStartLocation" FontWeight="SemiBold"/>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <StackPanel Orientation="Vertical" Spacing="8" Width="250">
+                            <CheckBox x:Name="SuggestedStartLocationCheckBox" Content="Set SuggestedStartLocation"/>
                             <ComboBox x:Name="StartLocationComboBox" SelectedIndex="0">
                                 <ComboBoxItem Content="DocumentsLibrary"/>
                                 <ComboBoxItem Content="ComputerFolder"/>
@@ -41,26 +41,27 @@
                         </StackPanel>
 
                         <StackPanel Orientation="Vertical" Spacing="8" >
-                            <TextBlock Text="SettingsIdentifier" FontWeight="SemiBold"/>
+                            <CheckBox x:Name="SettingsIdCheckBox" Content="Set SettingsIdentifier"/>
                             <TextBox x:Name="SettingsIdInput" PlaceholderText="Enter settings identifier" Text="TestSettings1"/>
                         </StackPanel>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Spacing="8" >
+                        <StackPanel Orientation="Horizontal" Spacing="8" Width="250">
+                            <StackPanel Orientation="Vertical" Spacing="8" >
+                                <CheckBox x:Name="CommitButtonCheckBox" Content="Set CommitButtonText"/>
+                                <TextBox x:Name="CommitButtonTextInput" PlaceholderText="Enter commit button text" Text="Select This File"/>
+                            </StackPanel>
+                        </StackPanel>
+
                         <StackPanel Orientation="Vertical" Spacing="8" >
-                            <TextBlock Text="CommitButtonText" FontWeight="SemiBold"/>
-                            <TextBox x:Name="CommitButtonTextInput" PlaceholderText="Enter commit button text" Text="Select This File"/>
+                            <CheckBox x:Name="ViewModeCheckBox" Content="Set ViewMode (FileOpenPicker, FolderPicker)"/>
+                            <ComboBox x:Name="ViewModeComboBox" SelectedIndex="0">
+                                <ComboBoxItem Content="List"/>
+                                <ComboBoxItem Content="Thumbnail"/>
+                            </ComboBox>
                         </StackPanel>
                     </StackPanel>
-
-                    <StackPanel Orientation="Vertical" Spacing="8" >
-                        <TextBlock Text="ViewMode (FileOpenPicker, FolderPicker)" FontWeight="SemiBold"/>
-                        <ComboBox x:Name="ViewModeComboBox" SelectedIndex="0">
-                            <ComboBoxItem Content="List"/>
-                            <ComboBoxItem Content="Thumbnail"/>
-                        </ComboBox>
-                    </StackPanel>
-                    
 
                 </StackPanel>
             </StackPanel>
@@ -127,7 +128,7 @@
 
                                     <StackPanel Style="{StaticResource TestGroupStyle}">
                                         <CheckBox x:Name="FileTypeChoicesCheckBox" Content="Set FileTypeChoices"/>
-                                        <TextBox x:Name="FileTypeChoicesInput" PlaceholderText="Enter default extension" Text=' [{ "Document": [".txt", ".doc", ".pdf"], "Pictures" : [".png", ".jpg", ".jpeg"] } ]'/>
+                                        <TextBox x:Name="FileTypeChoicesInput" PlaceholderText="Enter default extension" Text=' { "Document": [".txt", ".doc", ".pdf"], "Pictures" : [".png", ".jpg", ".jpeg"] } '/>
                                     </StackPanel>
 
                                     <StackPanel Orientation="Horizontal" Spacing="8">

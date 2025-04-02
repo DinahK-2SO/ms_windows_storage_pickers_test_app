@@ -111,10 +111,25 @@ namespace FilePickersAppWithUnpackagedProj
                     }
                 }
 
-                picker.CommitButtonText = CommitButtonTextInput.Text;
-                picker.ViewMode = GetSelectedViewMode();
-                picker.SettingsIdentifier = SettingsIdInput.Text;
-                picker.SuggestedStartLocation = GetSelectedLocation();
+                if (CommitButtonCheckBox.IsChecked == true)
+                {
+                    picker.CommitButtonText = CommitButtonTextInput.Text;
+                }
+
+                if (ViewModeCheckBox.IsChecked == true)
+                {
+                    picker.ViewMode = GetSelectedViewMode();
+                }
+
+                if (SettingsIdCheckBox.IsChecked == true)
+                {
+                    picker.SettingsIdentifier = SettingsIdInput.Text;
+                }
+
+                if (SuggestedStartLocationCheckBox.IsChecked == true)
+                {
+                    picker.SuggestedStartLocation = GetSelectedLocation();
+                }
 
                 var file = await picker.PickSingleFileAsync();
                 if (file != null)
@@ -138,10 +153,26 @@ namespace FilePickersAppWithUnpackagedProj
             {
                 // Initialize new picker with AppWindow.Id
                 var picker = new Microsoft.Windows.Storage.Pickers.FileOpenPicker(this.AppWindow.Id);
-                picker.CommitButtonText = CommitButtonTextInput.Text;
-                picker.ViewMode = GetSelectedNewViewMode();
-                picker.SettingsIdentifier = SettingsIdInput.Text;
-                picker.SuggestedStartLocation = GetSelectedNewLocationId();
+
+                if (CommitButtonCheckBox.IsChecked == true)
+                {
+                    picker.CommitButtonText = CommitButtonTextInput.Text;
+                }
+
+                if (ViewModeCheckBox.IsChecked == true)
+                {
+                    picker.ViewMode = GetSelectedNewViewMode();
+                }
+
+                if (SettingsIdCheckBox.IsChecked == true)
+                {
+                    picker.SettingsIdentifier = SettingsIdInput.Text;
+                }
+
+                if (SuggestedStartLocationCheckBox.IsChecked == true)
+                {
+                    picker.SuggestedStartLocation = GetSelectedNewLocationId();
+                }
 
                 var result = await picker.PickSingleFileAsync();
                 if (result != null)
@@ -177,10 +208,25 @@ namespace FilePickersAppWithUnpackagedProj
                     }
                 }
 
-                picker.CommitButtonText = CommitButtonTextInput.Text;
-                picker.ViewMode = GetSelectedViewMode();
-                picker.SettingsIdentifier = SettingsIdInput.Text;
-                picker.SuggestedStartLocation = GetSelectedLocation();
+                if (CommitButtonCheckBox.IsChecked == true)
+                {
+                    picker.CommitButtonText = CommitButtonTextInput.Text;
+                }
+
+                if (ViewModeCheckBox.IsChecked == true)
+                {
+                    picker.ViewMode = GetSelectedViewMode();
+                }
+
+                if (SettingsIdCheckBox.IsChecked == true)
+                {
+                    picker.SettingsIdentifier = SettingsIdInput.Text;
+                }
+
+                if (SuggestedStartLocationCheckBox.IsChecked == true)
+                {
+                    picker.SuggestedStartLocation = GetSelectedLocation();
+                }
                 
                 var files = await picker.PickMultipleFilesAsync();
                 if (files != null && files.Count > 0)
@@ -208,10 +254,26 @@ namespace FilePickersAppWithUnpackagedProj
             try
             {
                 var picker = new Microsoft.Windows.Storage.Pickers.FileOpenPicker(this.AppWindow.Id);
-                picker.CommitButtonText = CommitButtonTextInput.Text;
-                picker.ViewMode = GetSelectedNewViewMode();
-                picker.SettingsIdentifier = SettingsIdInput.Text;
-                picker.SuggestedStartLocation = GetSelectedNewLocationId();
+
+                if (CommitButtonCheckBox.IsChecked == true)
+                {
+                    picker.CommitButtonText = CommitButtonTextInput.Text;
+                }
+
+                if (ViewModeCheckBox.IsChecked == true)
+                {
+                    picker.ViewMode = GetSelectedNewViewMode();
+                }
+
+                if (SettingsIdCheckBox.IsChecked == true)
+                {
+                    picker.SettingsIdentifier = SettingsIdInput.Text;
+                }
+
+                if (SuggestedStartLocationCheckBox.IsChecked == true)
+                {
+                    picker.SuggestedStartLocation = GetSelectedNewLocationId();
+                }
 
                 var results = await picker.PickMultipleFilesAsync();
                 if (results != null && results.Count > 0)
@@ -251,10 +313,25 @@ namespace FilePickersAppWithUnpackagedProj
                     }
                 }
 
-                picker.CommitButtonText = CommitButtonTextInput.Text;
-                picker.ViewMode = GetSelectedViewMode();
-                picker.SettingsIdentifier = SettingsIdInput.Text;
-                picker.SuggestedStartLocation = GetSelectedLocation();
+                if (CommitButtonCheckBox.IsChecked == true)
+                {
+                    picker.CommitButtonText = CommitButtonTextInput.Text;
+                }
+
+                if (ViewModeCheckBox.IsChecked == true)
+                {
+                    picker.ViewMode = GetSelectedViewMode();
+                }
+
+                if (SettingsIdCheckBox.IsChecked == true)
+                {
+                    picker.SettingsIdentifier = SettingsIdInput.Text;
+                }
+
+                if (SuggestedStartLocationCheckBox.IsChecked == true)
+                {
+                    picker.SuggestedStartLocation = GetSelectedLocation();
+                }
                 
                 var file = await picker.PickSingleFileAsync();
                 if (file != null)
@@ -287,10 +364,25 @@ namespace FilePickersAppWithUnpackagedProj
                     }
                 }
 
-                picker.CommitButtonText = CommitButtonTextInput.Text;
-                picker.ViewMode = GetSelectedNewViewMode();
-                picker.SettingsIdentifier = SettingsIdInput.Text;
-                picker.SuggestedStartLocation = GetSelectedNewLocationId();
+                if (CommitButtonCheckBox.IsChecked == true)
+                {
+                    picker.CommitButtonText = CommitButtonTextInput.Text;
+                }
+
+                if (ViewModeCheckBox.IsChecked == true)
+                {
+                    picker.ViewMode = GetSelectedNewViewMode();
+                }
+
+                if (SettingsIdCheckBox.IsChecked == true)
+                {
+                    picker.SettingsIdentifier = SettingsIdInput.Text;
+                }
+
+                if (SuggestedStartLocationCheckBox.IsChecked == true)
+                {
+                    picker.SuggestedStartLocation = GetSelectedNewLocationId();
+                }   
                 
                 var result = await picker.PickSingleFileAsync();
                 if (result != null)
@@ -344,9 +436,20 @@ namespace FilePickersAppWithUnpackagedProj
                     }
                 }
 
-                picker.CommitButtonText = CommitButtonTextInput.Text;
-                picker.SettingsIdentifier = SettingsIdInput.Text;
-                picker.SuggestedStartLocation = GetSelectedLocation();
+                if (CommitButtonCheckBox.IsChecked == true)
+                {
+                    picker.CommitButtonText = CommitButtonTextInput.Text;
+                }
+
+                if (SettingsIdCheckBox.IsChecked == true)
+                {
+                    picker.SettingsIdentifier = SettingsIdInput.Text;
+                }
+
+                if (SuggestedStartLocationCheckBox.IsChecked == true)
+                {
+                    picker.SuggestedStartLocation = GetSelectedLocation();
+                }
                 
                 var file = await picker.PickSaveFileAsync();
                 if (file != null)
@@ -394,10 +497,21 @@ namespace FilePickersAppWithUnpackagedProj
                     }
                 }
 
-                picker.CommitButtonText = CommitButtonTextInput.Text;
-                picker.SettingsIdentifier = SettingsIdInput.Text;
-                picker.SuggestedStartLocation = GetSelectedNewLocationId();
-                
+                if (CommitButtonCheckBox.IsChecked == true)
+                {
+                    picker.CommitButtonText = CommitButtonTextInput.Text;
+                }
+
+                if (SettingsIdCheckBox.IsChecked == true)
+                {
+                    picker.SettingsIdentifier = SettingsIdInput.Text;
+                }
+
+                if (SuggestedStartLocationCheckBox.IsChecked == true)
+                {
+                    picker.SuggestedStartLocation = GetSelectedNewLocationId();
+                }
+                                
                 var result = await picker.PickSaveFileAsync();
                 if (result != null)
                 {
@@ -435,9 +549,20 @@ namespace FilePickersAppWithUnpackagedProj
                     }
                 }
 
-                picker.CommitButtonText = CommitButtonTextInput.Text;
-                picker.SettingsIdentifier = SettingsIdInput.Text;
-                picker.SuggestedStartLocation = GetSelectedLocation();
+                if (CommitButtonCheckBox.IsChecked == true)
+                {
+                    picker.CommitButtonText = CommitButtonTextInput.Text;
+                }
+
+                if (SettingsIdCheckBox.IsChecked == true)
+                {
+                    picker.SettingsIdentifier = SettingsIdInput.Text;
+                }
+
+                if (SuggestedStartLocationCheckBox.IsChecked == true)
+                {
+                    picker.SuggestedStartLocation = GetSelectedLocation();
+                }
                 
                 var folder = await picker.PickSingleFolderAsync();
                 if (folder != null)
@@ -460,9 +585,21 @@ namespace FilePickersAppWithUnpackagedProj
             try
             {
                 var picker = new Microsoft.Windows.Storage.Pickers.FolderPicker(this.AppWindow.Id);
-                picker.CommitButtonText = CommitButtonTextInput.Text;
-                picker.SettingsIdentifier = SettingsIdInput.Text;
-                picker.SuggestedStartLocation = GetSelectedNewLocationId();
+                
+                if (CommitButtonCheckBox.IsChecked == true)
+                {
+                    picker.CommitButtonText = CommitButtonTextInput.Text;
+                }
+
+                if (SettingsIdCheckBox.IsChecked == true)
+                {
+                    picker.SettingsIdentifier = SettingsIdInput.Text;
+                }
+
+                if (SuggestedStartLocationCheckBox.IsChecked == true)
+                {
+                    picker.SuggestedStartLocation = GetSelectedNewLocationId();
+                }
                 
                 var result = await picker.PickSingleFolderAsync();
                 if (result != null)
@@ -497,7 +634,6 @@ namespace FilePickersAppWithUnpackagedProj
             picker.SettingsIdentifier = "Test04011829";
             picker.SuggestedStartLocation = Microsoft.Windows.Storage.Pickers.PickerLocationId.MusicLibrary;
             picker.CommitButtonText = CommitButtonTextInput.Text;
-            picker.ViewMode = GetSelectedNewViewMode();
             
             var file = await picker.PickSingleFileAsync();
             if (file != null)
