@@ -3,6 +3,9 @@
 * verify if the behavior of new pickers matches with UWP pickers.
 * check if there're undefined behaviors
 
+# Usage
+When the checkbox is selected (checked), meaning the specified
+attribute was set in code.
 
 # The Constructors
 
