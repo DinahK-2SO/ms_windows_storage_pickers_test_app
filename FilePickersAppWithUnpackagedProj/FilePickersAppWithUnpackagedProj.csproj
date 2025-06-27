@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.250325003-experimental" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.250626002-experimental" />
   </ItemGroup>
 
     <!-- Publish Properties -->

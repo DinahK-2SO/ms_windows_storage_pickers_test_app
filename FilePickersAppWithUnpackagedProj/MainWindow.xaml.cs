@@ -1,9 +1,10 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
-using Microsoft.UI.Xaml;
 
 namespace FilePickersAppWithUnpackagedProj
 {
@@ -621,6 +622,42 @@ namespace FilePickersAppWithUnpackagedProj
 
         #region test any code
         // Write anything here.
+
+        private async void testCornerCase_UwpClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var savePicker = new Windows.Storage.Pickers.FileSavePicker();
+                WinRT.Interop.InitializeWithWindow.Initialize(savePicker, WinRT.Interop.WindowNative.GetWindowHandle(this));
+                savePicker.SettingsIdentifier = "TestSavePicker";
+
+                var openPicker = new Windows.Storage.Pickers.FileOpenPicker();
+                WinRT.Interop.InitializeWithWindow.Initialize(openPicker, WinRT.Interop.WindowNative.GetWindowHandle(this));
+                openPicker.SettingsIdentifier = "TestSavePicker";
+
+                // config
+                openPicker.FileTypeFilter.Add(".txt");
+                openPicker.FileTypeFilter.Add(".doc");
+                savePicker.FileTypeChoices.Add("Pictures", new List<string> { ".jpg", ".jpeg", ".png" });
+                savePicker.FileTypeChoices.Add("Documents", new List<string> { ".txt", ".doc" });
+
+                // Act.
+                var storageFile1 = await openPicker.PickSingleFileAsync(); // pick \temp\test0605\1.txt
+
+                var storageFile2 = await openPicker.PickSingleFileAsync(); // delete \temp\test0605, pick \temp\test\2.txt
+
+                savePicker.SuggestedSaveFile = storageFile1;
+                var savedFile = await savePicker.PickSaveFileAsync();
+                // what is displayed?
+
+
+            }
+            catch (Exception ex)
+            {
+                LogResult($"Error in UWP FileSavePicker: {ex.Message}");
+            }
+        }
+
         private async void TestAnyCode_Click(object sender, RoutedEventArgs e)
         {
             //var picker = new Windows.Storage.Pickers.FileOpenPicker();
@@ -629,21 +666,62 @@ namespace FilePickersAppWithUnpackagedProj
             //WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
             //picker.FileTypeFilter.Add("*");
 
-            var picker = new Microsoft.Windows.Storage.Pickers.FileOpenPicker(this.AppWindow.Id);
 
-            picker.SettingsIdentifier = "Test04011829";
-            picker.SuggestedStartLocation = Microsoft.Windows.Storage.Pickers.PickerLocationId.MusicLibrary;
-            picker.CommitButtonText = CommitButtonTextInput.Text;
-            
-            var file = await picker.PickSingleFileAsync();
-            if (file != null)
+
+            //var picker = new Microsoft.Windows.Storage.Pickers.FileOpenPicker(this.AppWindow.Id);
+
+            //picker.SettingsIdentifier = "Test04011829";
+            //picker.SuggestedStartLocation = Microsoft.Windows.Storage.Pickers.PickerLocationId.MusicLibrary;
+            //picker.CommitButtonText = CommitButtonTextInput.Text;
+
+            //var file = await picker.PickSingleFileAsync();
+            //if (file != null)
+            //{
+            //    LogResult($"UWP FileOpenPicker - PickSingleFileAsync:\nFile: Path: {file.Path}");
+            //}
+            //else
+            //{
+            //    LogResult("UWP FileOpenPicker - PickSingleFileAsync: Operation cancelled");
+            //}
+
+            try{
+                var picker = new Microsoft.Windows.Storage.Pickers.FileSavePicker(this.AppWindow.Id);
+                picker.SuggestedFileName = "1.txt";
+                picker.SuggestedSaveFilePath = @"C:\temp3\abc.txt";
+                var result = await picker.PickSaveFileAsync(); 
+            } catch (Exception ex)
             {
-                LogResult($"UWP FileOpenPicker - PickSingleFileAsync:\nFile: Path: {file.Path}");
+                LogResult($"Error in New FileSavePicker: {ex.Message}");
             }
-            else
-            {
-                LogResult("UWP FileOpenPicker - PickSingleFileAsync: Operation cancelled");
-            }
+
+
+
+            //try
+            //{
+            //    var picker = new Windows.Storage.Pickers.FileSavePicker();
+            //    var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+            //    WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
+
+            //    picker.FileTypeChoices.Add("Text Files", new List<string> { ".txt", ".md" });
+
+            //    var sf = await Windows.Storage.StorageFile.GetFileFromPathAsync(@"C:\temp3\MyFile.txt");
+            //    picker.SuggestedSaveFile = sf;
+
+            //    var file = await picker.PickSaveFileAsync();
+
+            //    if (file != null)
+            //    {
+            //        LogResult($"UWP FileSavePicker with FileTypeChoices\nFile: {file.Name}\nPath: {file.Path}");
+            //    }
+            //    else
+            //    {
+            //        LogResult("UWP FileSavePicker with FileTypeChoices\nOperation cancelled");
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    LogResult($"Error in UWP FileSavePicker: {ex.Message}");
+            //}
         }
 
         #endregion
