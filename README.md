@@ -72,7 +72,7 @@ attribute was set in code.
 1. if set to PickerLocationId.Unspecified, the picker throw "invalid parameter error"
 
 ### SDK
-1. if set to PickerLocationId.Unspecified, falls back to the DocumentLibrary. [TODO]
+1. if set to PickerLocationId.Unspecified, falls back to the DocumentLibrary.
 
 ## SettingsIdentifier
 0. Implemented in FileOpenPicker, FileSavePicker, FolderPicker
@@ -85,17 +85,14 @@ attribute was set in code.
 ### Common Points of UWP and New Pickers
 0. Implemented in FileOpenPicker and FolderPicker.
 FileSavePicker doesn't have this attribute.
+1. accept * as filter type, doesn't accept other wildcards
 
 ### UWP
 1. when not specified, throw compile error
-1. accept * as filter type, doesn't accept other wildcards
+
 
 ### New Pickers
 1. when not specified, default to be "*"
-1. accept wildcard configuration
-
-    <!-- @Xiang Hong, it might be long ago. Have we got approval for this change? -->
-
 
 ## ViewMode
 ### Common Behaviors of UWP and New Pickers
@@ -105,11 +102,11 @@ FileSavePicker doesn't have this attribute.
 
 1. Display the files in dialog in List/Thumbnail mode based on ViewMode config
     
-    If set asList, should display the files in list mode
+    If set as List, should display the files in list mode
     
-    If set asThumbnail, should display the files in mode.
+    If set as Thumbnail, should display the files in mode.
 
-1. If not specified, ???
+1. If not specified, default to ViewMode.List
 
 ## SuggestedFileName
 ### Common Behaviors of UWP and New Pickers
@@ -125,7 +122,14 @@ FileSavePicker doesn't have this attribute.
 
 ## SuggestedSaveFile
 0. Implemented In FileSavePicker
-<!-- The expected behavior of this property is to be decided. -->
+1. Replacing the SuggestedSaveFile with FileSavePicker.SuggestedFolder
+2. If the SuggestedFolder (or the folder of SuggestedFile) doesn't exist,
+
+### UWP
+diaplay an error message box then proceed with last opened directory.
+
+### New Pickers
+silently proceed with last opened directory.
 
 ## FileTypeChoices
 ### Common Behaviors of UWP and New Pickers
@@ -140,8 +144,6 @@ FileSavePicker doesn't have this attribute.
     bug - the new pickers didn't implement this behavior
 
     https://microsoft.visualstudio.com/OS/_workitems/edit/56776751: FileSavePicker - When the file extension defined by end user is not in the FileTypeChoices, automatically attach the first extension in the current choice group.
-
-1. if the file doesn't exist  ???
 
 
 # FileOpenPicker

@@ -11,7 +11,7 @@
     <Nullable>enable</Nullable>
 
     <!-- make it unpackaged: -->
-	  <WindowsPackageType>None</WindowsPackageType>
+	  <!--WindowsPackageType>None</WindowsPackageType-->
 
     <!-- make app self contained: -->
 	  <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
@@ -22,8 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.250626002-experimental" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.250807004-preview1" />
+    <PackageReference Include="System.Collections" Version="4.3.0" />
   </ItemGroup>
 
     <!-- Publish Properties -->

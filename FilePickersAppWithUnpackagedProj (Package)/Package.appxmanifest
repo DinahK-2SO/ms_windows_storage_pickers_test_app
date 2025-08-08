@@ -5,12 +5,13 @@
   xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  xmlns:uap10="http://schemas.microsoft.com/appx/manifest/uap/windows10/10"
   IgnorableNamespaces="uap rescap">
 
   <Identity
     Name="f244ef6d-774c-4055-b79b-8ae2ccb7acba"
-    Publisher="CN=xiaomgao"
-    Version="1.0.0.0" />
+    Publisher="CN=xiaomgao-pickers-localization-test-20250701"
+    Version="1.0.7.0" />
 
   <mp:PhoneIdentity PhoneProductId="f244ef6d-774c-4055-b79b-8ae2ccb7acba" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
@@ -30,9 +31,11 @@
   </Resources>
 
   <Applications>
+	  <!--$targetentrypoint$-->
     <Application Id="App"
       Executable="$targetnametoken$.exe"
-      EntryPoint="$targetentrypoint$">
+      EntryPoint="windows.partialTrustApplication"> <!--container-->
+		
       <uap:VisualElements
         DisplayName="FilePickersAppWithUnpackagedProj (Package)"
         Description="FilePickersAppWithUnpackagedProj (Package)"
@@ -46,6 +49,7 @@
   </Applications>
 
   <Capabilities>
-    <rescap:Capability Name="runFullTrust" />
+	  <!-- PartialTrust runFullTrust -->
+	  <rescap:Capability Name="runFullTrust" />  
   </Capabilities>
 </Package>

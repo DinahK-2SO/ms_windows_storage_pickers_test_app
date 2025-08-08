@@ -37,6 +37,7 @@
                                 <ComboBoxItem Content="VideosLibrary"/>
                                 <ComboBoxItem Content="Objects3D"/>
                                 <ComboBoxItem Content="Unspecified"/>
+                                <ComboBoxItem Content="Test Error Throw"/>
                             </ComboBox>
                         </StackPanel>
 
@@ -59,6 +60,7 @@
                             <ComboBox x:Name="ViewModeComboBox" SelectedIndex="0">
                                 <ComboBoxItem Content="List"/>
                                 <ComboBoxItem Content="Thumbnail"/>
+                                <ComboBoxItem Content="Test Error Throw"/>
                             </ComboBox>
                         </StackPanel>
                     </StackPanel>
@@ -76,6 +78,12 @@
                             <StackPanel Spacing="12" Padding="12">
                                 <TextBlock Text="FileOpenPicker Tests" FontSize="20" FontWeight="SemiBold"/>
 
+                                <!-- FileTypeFilter Tests -->
+                                <StackPanel Style="{StaticResource TestGroupStyle}">
+                                    <CheckBox Name="FileTypeFilterCheckBox" Content="Set FileTypeFilter"/>
+                                    <TextBox x:Name="FileTypeFilterInput" PlaceholderText="Enter filters separated by comma (e.g., .jpg,.png)"/>
+                                </StackPanel>
+
                                 <!-- Basic Picker Tests -->
                                 <StackPanel Style="{StaticResource TestGroupStyle}">
                                     <TextBlock Text="Constructor and Basic Picking" FontWeight="SemiBold"/>
@@ -86,16 +94,6 @@
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <Button Content="UWP - Pick Multiple Files" Click="UwpPickMultipleFiles_Click"/>
                                         <Button Content="New - Pick Multiple Files" Click="NewPickMultipleFiles_Click"/>
-                                    </StackPanel>
-                                </StackPanel>
-
-                                <!-- FileTypeFilter Tests -->
-                                <StackPanel Style="{StaticResource TestGroupStyle}">
-                                    <CheckBox Name="FileTypeFilterCheckBox" Content="Set FileTypeFilter"/>
-                                    <TextBox x:Name="FileTypeFilterInput" PlaceholderText="Enter filters separated by comma (e.g., .jpg,.png)"/>
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <Button Content="UWP - With Filter" Click="UwpFileTypeFilter_Click"/>
-                                        <Button Content="New - With Filter" Click="NewFileTypeFilter_Click"/>
                                     </StackPanel>
                                 </StackPanel>
 
@@ -110,18 +108,26 @@
                                 <TextBlock Text="FileSavePicker Tests" FontSize="20" FontWeight="SemiBold"/>
 
                                 <StackPanel Orientation="Vertical">
-                                    <StackPanel Orientation="Horizontal">
-                                        <!-- SuggestedFileName Tests -->
-                                        <StackPanel Orientation="Vertical" Width="250" Style="{StaticResource TestGroupStyle}">
-                                            <CheckBox x:Name="SuggestedFileNameCheckBox" Content="Set SuggestedFileName"/>
-                                            <TextBox x:Name="SuggestedFileNameInput" PlaceholderText="Enter suggested file name" Text="MyDocument"/>
+                                    <StackPanel Orientation="Vertical">
+                                        <StackPanel Orientation="Horizontal">
+                                            <!-- SuggestedFileName Tests -->
+                                            <StackPanel Orientation="Vertical" Width="250" Style="{StaticResource TestGroupStyle}">
+                                                <CheckBox x:Name="SuggestedFileNameCheckBox" Content="Set SuggestedFileName"/>
+                                                <TextBox x:Name="SuggestedFileNameInput" PlaceholderText="Enter suggested file name" Text="MyDocument"/>
+                                            </StackPanel>
+
+                                            <!-- DefaultFileExtension Tests -->
+                                            <StackPanel Orientation="Vertical" Style="{StaticResource TestGroupStyle}">
+                                                <!--TextBlock Text="DefaultFileExtension" FontWeight="SemiBold"/-->
+                                                <CheckBox x:Name="DefaultFileExtensionCheckBox" Content="Set DefaultFileExtension"/>
+                                                <TextBox x:Name="DefaultFileExtensionInput" PlaceholderText="Enter default extension" Text=".txt"/>
+                                            </StackPanel>
                                         </StackPanel>
 
-                                        <!-- DefaultFileExtension Tests -->
-                                        <StackPanel Orientation="Vertical" Style="{StaticResource TestGroupStyle}">
-                                            <!--TextBlock Text="DefaultFileExtension" FontWeight="SemiBold"/-->
-                                            <CheckBox x:Name="DefaultFileExtensionCheckBox" Content="Set DefaultFileExtension"/>
-                                            <TextBox x:Name="DefaultFileExtensionInput" PlaceholderText="Enter default extension" Text=".txt"/>
+                                        <!-- SuggestedFolder Tests -->
+                                        <StackPanel Style="{StaticResource TestGroupStyle}">
+                                            <CheckBox x:Name="SuggestedFolderCheckBox" Content="Set SuggestedFolder"/>
+                                            <TextBox x:Name="SuggestedFolderInput" PlaceholderText="Enter default extension" Text='C:\temp\TestStoragePickers'/>
                                         </StackPanel>
                                     </StackPanel>
 
@@ -132,8 +138,8 @@
                                     </StackPanel>
 
                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <Button Content="UWP - Text Files" Click="UwpFileTypeChoices_Click"/>
-                                        <Button Content="New - Text Files" Click="NewFileTypeChoices_Click"/>
+                                        <Button Content="UWP - FileSavePicker" Click="UwpFileTypeChoices_Click"/>
+                                        <Button Content="New - FileSavePicker" Click="NewFileTypeChoices_Click"/>
                                     </StackPanel>
 
                                 </StackPanel>

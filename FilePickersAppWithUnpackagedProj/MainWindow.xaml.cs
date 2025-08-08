@@ -5,9 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace FilePickersAppWithUnpackagedProj
 {
+    [JsonSerializable(typeof(Dictionary<string, List<string>>))]
+    internal partial class SourceGenerationContext : JsonSerializerContext
+    {
+    }
+
     public sealed partial class MainWindow : Window
     {
         public MainWindow()
@@ -37,6 +43,7 @@ namespace FilePickersAppWithUnpackagedProj
                 case 7: return Windows.Storage.Pickers.PickerLocationId.VideosLibrary;
                 case 8: return Windows.Storage.Pickers.PickerLocationId.Objects3D;
                 case 9: return Windows.Storage.Pickers.PickerLocationId.Unspecified;
+                case 10: return (Windows.Storage.Pickers.PickerLocationId)10;
                 default: throw new InvalidOperationException("Invalid location selected");
             }
         }
@@ -49,12 +56,13 @@ namespace FilePickersAppWithUnpackagedProj
                 case 1: return Microsoft.Windows.Storage.Pickers.PickerLocationId.ComputerFolder;
                 case 2: return Microsoft.Windows.Storage.Pickers.PickerLocationId.Desktop;
                 case 3: return Microsoft.Windows.Storage.Pickers.PickerLocationId.Downloads;
-                case 4: return Microsoft.Windows.Storage.Pickers.PickerLocationId.HomeGroup;
+                case 4: return (Microsoft.Windows.Storage.Pickers.PickerLocationId)4;
                 case 5: return Microsoft.Windows.Storage.Pickers.PickerLocationId.MusicLibrary;
                 case 6: return Microsoft.Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
                 case 7: return Microsoft.Windows.Storage.Pickers.PickerLocationId.VideosLibrary;
                 case 8: return Microsoft.Windows.Storage.Pickers.PickerLocationId.Objects3D;
                 case 9: return Microsoft.Windows.Storage.Pickers.PickerLocationId.Unspecified;
+                case 10: return (Microsoft.Windows.Storage.Pickers.PickerLocationId)10;
                 default: throw new InvalidOperationException("Invalid location selected");
             }
         }
@@ -65,6 +73,7 @@ namespace FilePickersAppWithUnpackagedProj
             {
                 case 0: return Windows.Storage.Pickers.PickerViewMode.List;
                 case 1: return Windows.Storage.Pickers.PickerViewMode.Thumbnail;
+                case 2: return (Windows.Storage.Pickers.PickerViewMode)2;
                 default: throw new InvalidOperationException("Invalid view mode selected");
             }
         }
@@ -75,6 +84,7 @@ namespace FilePickersAppWithUnpackagedProj
             {
                 case 0: return Microsoft.Windows.Storage.Pickers.PickerViewMode.List;
                 case 1: return Microsoft.Windows.Storage.Pickers.PickerViewMode.Thumbnail;
+                case 2: return (Microsoft.Windows.Storage.Pickers.PickerViewMode)2;
                 default: throw new InvalidOperationException("Invalid view mode selected");
             }
         }
@@ -135,7 +145,7 @@ namespace FilePickersAppWithUnpackagedProj
                 var file = await picker.PickSingleFileAsync();
                 if (file != null)
                 {
-                    LogResult($"UWP FileOpenPicker - PickSingleFileAsync:\nFile: {file.Name}\nPath: {file.Path}");
+                    LogResult($"UWP FileOpenPicker - PickSingleFileAsync:\nViewMode: {picker.ViewMode.ToString()}\nFile: {file.Name}\nPath: {file.Path}");
                 }
                 else
                 {
@@ -167,7 +177,7 @@ namespace FilePickersAppWithUnpackagedProj
 
                 if (SettingsIdCheckBox.IsChecked == true)
                 {
-                    picker.SettingsIdentifier = SettingsIdInput.Text;
+                    //picker.SettingsIdentifier = SettingsIdInput.Text;
                 }
 
                 if (SuggestedStartLocationCheckBox.IsChecked == true)
@@ -178,7 +188,7 @@ namespace FilePickersAppWithUnpackagedProj
                 var result = await picker.PickSingleFileAsync();
                 if (result != null)
                 {
-                    LogResult($"New FileOpenPicker - PickSingleFileAsync:\nFile: {System.IO.Path.GetFileName(result.Path)}\nPath: {result.Path}");
+                    LogResult($"New FileOpenPicker - PickSingleFileAsync:\nViewMode: {picker.ViewMode.ToString()}\nFile: {System.IO.Path.GetFileName(result.Path)}\nPath: {result.Path}");
                 }
                 else
                 {
@@ -268,7 +278,7 @@ namespace FilePickersAppWithUnpackagedProj
 
                 if (SettingsIdCheckBox.IsChecked == true)
                 {
-                    picker.SettingsIdentifier = SettingsIdInput.Text;
+                    //picker.SettingsIdentifier = SettingsIdInput.Text;
                 }
 
                 if (SuggestedStartLocationCheckBox.IsChecked == true)
@@ -377,7 +387,7 @@ namespace FilePickersAppWithUnpackagedProj
 
                 if (SettingsIdCheckBox.IsChecked == true)
                 {
-                    picker.SettingsIdentifier = SettingsIdInput.Text;
+                    //picker.SettingsIdentifier = SettingsIdInput.Text;
                 }
 
                 if (SuggestedStartLocationCheckBox.IsChecked == true)
@@ -429,7 +439,7 @@ namespace FilePickersAppWithUnpackagedProj
                     var choicesJson = FileTypeChoicesInput.Text;
                     if (!string.IsNullOrEmpty(choicesJson))
                     {
-                        var choices = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, List<string>>>(choicesJson);
+                        var choices = System.Text.Json.JsonSerializer.Deserialize(choicesJson, SourceGenerationContext.Default.DictionaryStringListString);
                         foreach (var choice in choices)
                         {
                             picker.FileTypeChoices.Add(choice.Key, choice.Value);
@@ -484,13 +494,18 @@ namespace FilePickersAppWithUnpackagedProj
                     picker.DefaultFileExtension = DefaultFileExtensionInput.Text;
                 }
 
+                if (SuggestedFolderCheckBox.IsChecked == true)
+                {
+                    picker.SuggestedFolder = SuggestedFolderInput.Text;
+                }
+
                 picker.FileTypeChoices.Clear();
                 if (FileTypeChoicesCheckBox.IsChecked == true)
                 {
-                    var choicesJson = FileTypeChoicesInput.Text;
+                    var choicesJson = (string)FileTypeChoicesInput.Text;
                     if (!string.IsNullOrEmpty(choicesJson))
                     {
-                        var choices = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, List<string>>>(choicesJson);
+                        var choices = System.Text.Json.JsonSerializer.Deserialize(choicesJson, SourceGenerationContext.Default.DictionaryStringListString);
                         foreach (var choice in choices)
                         {
                             picker.FileTypeChoices.Add(choice.Key, choice.Value);
@@ -505,7 +520,7 @@ namespace FilePickersAppWithUnpackagedProj
 
                 if (SettingsIdCheckBox.IsChecked == true)
                 {
-                    picker.SettingsIdentifier = SettingsIdInput.Text;
+                    //picker.SettingsIdentifier = SettingsIdInput.Text;
                 }
 
                 if (SuggestedStartLocationCheckBox.IsChecked == true)
@@ -516,7 +531,7 @@ namespace FilePickersAppWithUnpackagedProj
                 var result = await picker.PickSaveFileAsync();
                 if (result != null)
                 {
-                    LogResult($"New FileSavePicker with FileTypeChoices\nFile: {System.IO.Path.GetFileName(result.Path)}\nPath: {result.Path}");
+                    LogResult($"New FileSavePicker picked file: \n{System.IO.Path.GetFileName(result.Path)}\nPath: {result.Path}");
                 }
                 else
                 {
@@ -594,7 +609,7 @@ namespace FilePickersAppWithUnpackagedProj
 
                 if (SettingsIdCheckBox.IsChecked == true)
                 {
-                    picker.SettingsIdentifier = SettingsIdInput.Text;
+                    //picker.SettingsIdentifier = SettingsIdInput.Text;
                 }
 
                 if (SuggestedStartLocationCheckBox.IsChecked == true)
@@ -627,13 +642,15 @@ namespace FilePickersAppWithUnpackagedProj
         {
             try
             {
-                var savePicker = new Windows.Storage.Pickers.FileSavePicker();
-                WinRT.Interop.InitializeWithWindow.Initialize(savePicker, WinRT.Interop.WindowNative.GetWindowHandle(this));
-                savePicker.SettingsIdentifier = "TestSavePicker";
-
                 var openPicker = new Windows.Storage.Pickers.FileOpenPicker();
                 WinRT.Interop.InitializeWithWindow.Initialize(openPicker, WinRT.Interop.WindowNative.GetWindowHandle(this));
-                openPicker.SettingsIdentifier = "TestSavePicker";
+                openPicker.SettingsIdentifier = "TestUWPAnything";
+
+                var savePicker = new Windows.Storage.Pickers.FileSavePicker();
+                WinRT.Interop.InitializeWithWindow.Initialize(savePicker, WinRT.Interop.WindowNative.GetWindowHandle(this));
+                savePicker.SettingsIdentifier = "TestUWPAnyThing";
+                savePicker.SuggestedFileName = "Origin.txt";
+
 
                 // config
                 openPicker.FileTypeFilter.Add(".txt");
@@ -651,50 +668,95 @@ namespace FilePickersAppWithUnpackagedProj
                 // what is displayed?
 
 
+
+                //openPicker.CommitButtonText = "";
+
+                //openPicker.FileTypeFilter.Add("abc");  // .txt .doc *
+                //openPicker.CommitButtonText = "tes\0t";
+
+                //savePicker.SuggestedFileName = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.txt";
+
+                //savePicker.SuggestedStartLocation = (Windows.Storage.Pickers.PickerLocationId)1000;
+                //openPicker.ViewMode = (Windows.Storage.Pickers.PickerViewMode)100;
+
+                //var strWithEmbeddedNull = "abc\0def"; // this is a string with embedded null character
+                //openPicker.FileTypeFilter.Add(strWithEmbeddedNull);
+
+                /* UWP doesn't support SuggestedSaveFile to be a folder. Below code cannot compile:
+                var folder1 = await folderPicker.PickSingleFolderAsync();
+                savePicker.SuggestedSaveFile = folder1; // set folder as SuggestedSaveFile
+                */
+                //var result = await openPicker.PickSingleFileAsync(); // pick \temp\test0605\1.txt
+                //savePicker.SuggestedSaveFile = result; // set file as SuggestedSaveFile
+                //var saveResult = await savePicker.PickSaveFileAsync(); // open save picker dialog
+
+
+                // Cannot implicitly convert type 'Windows.Storage.StorageFolder' to 'Windows.Storage.StorageFile'
+
+                // // UWP SuggestedSaveFile deleted.
+                //// config
+                //openPicker.FileTypeFilter.Add(".txt");
+                //openPicker.FileTypeFilter.Add(".doc");
+                //savePicker.FileTypeChoices.Add("Pictures", new List<string> { ".jpg", ".jpeg", ".png" });
+                //savePicker.FileTypeChoices.Add("Documents", new List<string> { ".txt", ".doc" });
+
+                //// Act.
+                //var storageFile1 = await openPicker.PickSingleFileAsync(); // pick \temp\test0605\1.txt
+
+                //var storageFile2 = await openPicker.PickSingleFileAsync(); // delete \temp\test0605, pick \temp\test\2.txt
+
+                //savePicker.SuggestedSaveFile = storageFile1;
+                //var savedFile = await savePicker.PickSaveFileAsync();
+                //// what is displayed?
             }
             catch (Exception ex)
             {
-                LogResult($"Error in UWP FileSavePicker: {ex.Message}");
+                LogResult($"Error in UWP FilePicker: {ex.Message}");
             }
         }
 
         private async void TestAnyCode_Click(object sender, RoutedEventArgs e)
         {
-            //var picker = new Windows.Storage.Pickers.FileOpenPicker();
-            //// Initialize UWP picker
-            //var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-            //WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-            //picker.FileTypeFilter.Add("*");
-
-
-
-            //var picker = new Microsoft.Windows.Storage.Pickers.FileOpenPicker(this.AppWindow.Id);
-
-            //picker.SettingsIdentifier = "Test04011829";
-            //picker.SuggestedStartLocation = Microsoft.Windows.Storage.Pickers.PickerLocationId.MusicLibrary;
-            //picker.CommitButtonText = CommitButtonTextInput.Text;
-
-            //var file = await picker.PickSingleFileAsync();
-            //if (file != null)
-            //{
-            //    LogResult($"UWP FileOpenPicker - PickSingleFileAsync:\nFile: Path: {file.Path}");
-            //}
-            //else
-            //{
-            //    LogResult("UWP FileOpenPicker - PickSingleFileAsync: Operation cancelled");
-            //}
-
             try{
-                var picker = new Microsoft.Windows.Storage.Pickers.FileSavePicker(this.AppWindow.Id);
-                picker.SuggestedFileName = "1.txt";
-                picker.SuggestedSaveFilePath = @"C:\temp3\abc.txt";
-                var result = await picker.PickSaveFileAsync(); 
+                var picker = new Microsoft.Windows.Storage.Pickers.FileOpenPicker(this.AppWindow.Id)
+                {
+                    // (Optional) specify the initial location.
+                    //     If not specified, using PickerLocationId.Unspecified by default.
+                    SuggestedStartLocation = Microsoft.Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary,
+
+                    // (Optional) specify the text displayed on commit button. 
+                    //     If not specified, the system uses a default label of "Open" (suitably translated).
+                    CommitButtonText = "Choose selected files",
+
+                    // (Optional) specify file extensions filters. If not specified, default to all (*.*)
+                    FileTypeFilter = { ".txt", ".pdf", ".doc", ".docx" },
+
+                    ViewMode = Microsoft.Windows.Storage.Pickers.PickerViewMode.List,
+                };
+
+                /*picker.SettingsIdentifier = "Test\0718";
+                //picker.SuggestedFileName = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.txt";
+                //picker.SuggestedSaveFilePath = @"C:\temp3\abc.txt";*/
+                var buttontext = picker.CommitButtonText;
+                //picker.SuggestedFileName = "new API";
+                var result = await picker.PickSingleFileAsync();
+                LogResult($"Successfully picked file: {result.Path}");
+
+                var savePicker = new Microsoft.Windows.Storage.Pickers.FileSavePicker(this.AppWindow.Id)
+                {
+                    SuggestedStartLocation = Microsoft.Windows.Storage.Pickers.PickerLocationId.MusicLibrary,
+                    CommitButtonText = "Save selected file",
+                    DefaultFileExtension = ".txt",
+                    SuggestedFileName = "new file",
+                };
+
+                //savePicker.SuggestedSaveFilePath = @"C:\temp3\MyFile.txt";
+                var saveFile = await savePicker.PickSaveFileAsync();
+                LogResult($"Successfully saved file: {saveFile?.Path ?? "Operation cancelled"}");
             } catch (Exception ex)
             {
                 LogResult($"Error in New FileSavePicker: {ex.Message}");
             }
-
-
 
             //try
             //{
