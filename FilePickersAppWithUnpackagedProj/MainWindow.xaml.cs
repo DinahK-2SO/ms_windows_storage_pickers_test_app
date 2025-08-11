@@ -142,6 +142,15 @@ namespace FilePickersAppWithUnpackagedProj
                     picker.SuggestedStartLocation = GetSelectedLocation();
                 }
 
+                picker.FileTypeFilter.Clear();
+                if (FileTypeFilterCheckBox.IsChecked == true)
+                {
+                    foreach (var filter in GetFileFilters())
+                    {
+                        picker.FileTypeFilter.Add(filter);
+                    }
+                }
+
                 var file = await picker.PickSingleFileAsync();
                 if (file != null)
                 {
@@ -183,6 +192,15 @@ namespace FilePickersAppWithUnpackagedProj
                 if (SuggestedStartLocationCheckBox.IsChecked == true)
                 {
                     picker.SuggestedStartLocation = GetSelectedNewLocationId();
+                }
+
+                picker.FileTypeFilter.Clear();
+                if (FileTypeFilterCheckBox.IsChecked == true)
+                {
+                    foreach (var filter in GetFileFilters())
+                    {
+                        picker.FileTypeFilter.Add(filter);
+                    }
                 }
 
                 var result = await picker.PickSingleFileAsync();
@@ -238,7 +256,16 @@ namespace FilePickersAppWithUnpackagedProj
                 {
                     picker.SuggestedStartLocation = GetSelectedLocation();
                 }
-                
+
+                picker.FileTypeFilter.Clear();
+                if (FileTypeFilterCheckBox.IsChecked == true)
+                {
+                    foreach (var filter in GetFileFilters())
+                    {
+                        picker.FileTypeFilter.Add(filter);
+                    }
+                }
+
                 var files = await picker.PickMultipleFilesAsync();
                 if (files != null && files.Count > 0)
                 {
@@ -286,6 +313,15 @@ namespace FilePickersAppWithUnpackagedProj
                     picker.SuggestedStartLocation = GetSelectedNewLocationId();
                 }
 
+                picker.FileTypeFilter.Clear();
+                if (FileTypeFilterCheckBox.IsChecked == true)
+                {
+                    foreach (var filter in GetFileFilters())
+                    {
+                        picker.FileTypeFilter.Add(filter);
+                    }
+                }
+
                 var results = await picker.PickMultipleFilesAsync();
                 if (results != null && results.Count > 0)
                 {
@@ -306,111 +342,7 @@ namespace FilePickersAppWithUnpackagedProj
                 LogResult($"Error in New PickMultipleFilesAsync: {ex.Message}");
             }
         }
-        
-        private async void UwpFileTypeFilter_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var picker = new Windows.Storage.Pickers.FileOpenPicker();
-                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-                WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
 
-                picker.FileTypeFilter.Clear();
-                if (FileTypeFilterCheckBox.IsChecked == true)
-                {
-                    foreach (var filter in GetFileFilters())
-                    {
-                        picker.FileTypeFilter.Add(filter);
-                    }
-                }
-
-                if (CommitButtonCheckBox.IsChecked == true)
-                {
-                    picker.CommitButtonText = CommitButtonTextInput.Text;
-                }
-
-                if (ViewModeCheckBox.IsChecked == true)
-                {
-                    picker.ViewMode = GetSelectedViewMode();
-                }
-
-                if (SettingsIdCheckBox.IsChecked == true)
-                {
-                    picker.SettingsIdentifier = SettingsIdInput.Text;
-                }
-
-                if (SuggestedStartLocationCheckBox.IsChecked == true)
-                {
-                    picker.SuggestedStartLocation = GetSelectedLocation();
-                }
-                
-                var file = await picker.PickSingleFileAsync();
-                if (file != null)
-                {
-                    LogResult($"UWP FileOpenPicker with FileTypeFilter: {string.Join(", ", GetFileFilters())}\nFile: {file.Name}\nPath: {file.Path}");
-                }
-                else
-                {
-                    LogResult($"UWP FileOpenPicker with FileTypeFilter: {string.Join(", ", GetFileFilters())}\nOperation cancelled");
-                }
-            }
-            catch (Exception ex)
-            {
-                LogResult($"Error in UWP FileTypeFilter: {ex.Message}");
-            }
-        }
-        
-        private async void NewFileTypeFilter_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var picker = new Microsoft.Windows.Storage.Pickers.FileOpenPicker(this.AppWindow.Id);
-
-                picker.FileTypeFilter.Clear();
-                if (FileTypeFilterCheckBox.IsChecked == true)
-                {
-                    foreach (var filter in GetFileFilters())
-                    {
-                        picker.FileTypeFilter.Add(filter);
-                    }
-                }
-
-                if (CommitButtonCheckBox.IsChecked == true)
-                {
-                    picker.CommitButtonText = CommitButtonTextInput.Text;
-                }
-
-                if (ViewModeCheckBox.IsChecked == true)
-                {
-                    picker.ViewMode = GetSelectedNewViewMode();
-                }
-
-                if (SettingsIdCheckBox.IsChecked == true)
-                {
-                    //picker.SettingsIdentifier = SettingsIdInput.Text;
-                }
-
-                if (SuggestedStartLocationCheckBox.IsChecked == true)
-                {
-                    picker.SuggestedStartLocation = GetSelectedNewLocationId();
-                }   
-                
-                var result = await picker.PickSingleFileAsync();
-                if (result != null)
-                {
-                    LogResult($"New FileOpenPicker with FileTypeFilter: {string.Join(", ", GetFileFilters())}\nFile: {System.IO.Path.GetFileName(result.Path)}\nPath: {result.Path}");
-                }
-                else
-                {
-                    LogResult($"New FileOpenPicker with FileTypeFilter: {string.Join(", ", GetFileFilters())}\nOperation cancelled");
-                }
-            }
-            catch (Exception ex)
-            {
-                LogResult($"Error in New FileTypeFilter: {ex.Message}");
-            }
-        }
-        
         #endregion
         
         #region FileSavePicker Tests
