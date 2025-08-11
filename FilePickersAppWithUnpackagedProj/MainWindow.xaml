@@ -42,7 +42,7 @@
                         </StackPanel>
 
                         <StackPanel Orientation="Vertical" Spacing="8" >
-                            <CheckBox x:Name="SettingsIdCheckBox" Content="Set SettingsIdentifier"/>
+                            <CheckBox x:Name="SettingsIdCheckBox" Content="Set SettingsIdentifier (not implemented in new pickers)"/>
                             <TextBox x:Name="SettingsIdInput" PlaceholderText="Enter settings identifier" Text="TestSettings1"/>
                         </StackPanel>
                     </StackPanel>
@@ -113,7 +113,7 @@
                                             <!-- SuggestedFileName Tests -->
                                             <StackPanel Orientation="Vertical" Width="250" Style="{StaticResource TestGroupStyle}">
                                                 <CheckBox x:Name="SuggestedFileNameCheckBox" Content="Set SuggestedFileName"/>
-                                                <TextBox x:Name="SuggestedFileNameInput" PlaceholderText="Enter suggested file name" Text="MyDocument"/>
+                                                <TextBox x:Name="SuggestedFileNameInput" PlaceholderText="Enter suggested file name" Text="MyDocument.txt"/>
                                             </StackPanel>
 
                                             <!-- DefaultFileExtension Tests -->
